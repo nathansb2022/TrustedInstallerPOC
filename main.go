@@ -60,33 +60,33 @@ func RunAsTrustedInstaller(path string, args []string) error {
 		return fmt.Errorf("cannot open ti process: %v", err)
 	}
 
-    // Find the current user's Go bin path
-    userHome := os.Getenv("USERPROFILE")
-    goBinPath := filepath.Join(userHome, "go", "go", "bin")
+	// Find the current user's Go bin path
+	userHome := os.Getenv("USERPROFILE")
+	goBinPath := filepath.Join(userHome, "go", "go", "bin")
 
-    // Full path to the other Go program
-    newDir := filepath.Join(userHome, "Downloads", "master", "GC2-sheet-Scripted-master")
+	// Full path to the other Go program
+	newDir := filepath.Join(userHome, "Downloads", "master", "GC2-sheet-Scripted-master")
 
-    // Change the current working directory to the new directory
-    if err := os.Chdir(newDir); err != nil {
-        return fmt.Errorf("Error changing directory: %v", err)
-    }
+	// Change the current working directory to the new directory
+	if err := os.Chdir(newDir); err != nil {
+        	return fmt.Errorf("Error changing directory: %v", err)
+	}
 
 	cmd := exec.Command(path, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
-		CreationFlags: windows.CREATE_NEW_CONSOLE,
-		ParentProcess: syscall.Handle(hand),
+	CreationFlags: windows.CREATE_NEW_CONSOLE,
+	ParentProcess: syscall.Handle(hand),
 	}
 
 	// Determine the appropriate path separator for the current OS
-    pathSeparator := string(os.PathListSeparator)
+	pathSeparator := string(os.PathListSeparator)
 
-    // Construct the new PATH environment variable
-    currentPath := os.Getenv("PATH")
-    newPath := fmt.Sprintf("%s%s%s", goBinPath, pathSeparator, currentPath)
+	// Construct the new PATH environment variable
+	currentPath := os.Getenv("PATH")
+	newPath := fmt.Sprintf("%s%s%s", goBinPath, pathSeparator, currentPath)
 
-    // Set the PATH environment variable for this command
-    cmd.Env = append(os.Environ(), fmt.Sprintf("PATH=%s", newPath))
+	// Set the PATH environment variable for this command
+	cmd.Env = append(os.Environ(), fmt.Sprintf("PATH=%s", newPath))
 
 	err = cmd.Start()
 	if err != nil {
