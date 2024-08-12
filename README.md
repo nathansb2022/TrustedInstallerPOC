@@ -51,7 +51,7 @@ $ go run ti $myKey $mySheetId $myDriveId
 This will spawn a new cmd shell with TrustedInstaller privileges in Google Sheets which can be confirmed by running the command `whoami /all`
 
 <p align="center">
-  <img alt="Logo" src="img/Screenshot from 2024-08-11 20-10-32.png" height="55%" width="80%">
+  <img alt="Logo" src="img/Screenshot from 2024-08-11 20-10-32.png" height="70%" width="95%">
 </p>
 
 ## API
