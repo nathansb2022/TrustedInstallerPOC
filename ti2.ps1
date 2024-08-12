@@ -44,5 +44,5 @@ Invoke-WebRequest -Uri $keyFileUrl -UseBasicParsing -OutFile ".\master\GC2-sheet
 # Change to the TrustedInstaller directory
 Set-Location "$env:userprofile\Downloads\timaster\TrustedInstallerPOC-GC2-Sheet-master"
 
-# Run the gc2-sheet executable with the specified parameters
+# Run the TrustedInstaller executable with the specified parameters
 go run ti $myKey $mySheetId $myDriveId
