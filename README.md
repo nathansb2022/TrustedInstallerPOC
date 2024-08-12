@@ -4,7 +4,7 @@ A simple Proof of Concept in Powershell/Go to spawn a new shell as NT Authority\
 
 ## Configuration
 
-The Powershell script ti2.ps1 pulls nathansb2022/GC2-sheet-Scripted, nathansb2022/TrustedInstallerPOC-GC2-Sheet, and go1.21.12.windows-amd64.zip. Lastly, ti2.ps1 is configured to pull your Google service account .json key. See below for alternative method. For Google Sheets and Drive setup reference [GC2-Sheet-Scripted](https://github.com/nathansb2022/GC2-sheet-Scripted).
+The Powershell script ti2.ps1 pulls nathansb2022/GC2-sheet-Scripted, nathansb2022/TrustedInstallerPOC-GC2-Sheet, and go1.21.12.windows-amd64.zip. Lastly, ti2.ps1 is configured to pull your Google service account .json key. See below for alternative method. For Google Sheets and Drive setup reference [GC2-Sheet-Scripted](https://github.com/nathansb2022/GC2-sheet-Scripted). For this to run properly, the commands have to be run from an Adminstrator Powershell session.
 
 ## POC
 
@@ -58,3 +58,7 @@ This will spawn a new cmd shell with TrustedInstaller privileges in Google Sheet
 
 - RunAsTrustedInstaller
   - Use the `RunAsTrustedInstaller` function to pass any executable to be run with TrustedInstaller privileges.
+
+## Ducky Script
+
+Uploaded Duckycode.txt that starts an Administrator Powershell session, pulls the contents of the ti2.ps1, and executes with the command Invoke-Expression.
