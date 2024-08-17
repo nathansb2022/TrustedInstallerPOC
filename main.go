@@ -98,7 +98,7 @@ func RunAsTrustedInstaller(path string, args []string) error {
 }
 
 func main() {
-	if err := RunAsTrustedInstaller("go", []string{"run", "-ldflags", "'-H=windowsgui'", "GC2-sheet", "-k", args[0], "-s", args[1], "-d", args[2]}); err != nil {
+	if err := RunAsTrustedInstaller("go", []string{"run", "-ldflags='-H=windowsgui'", "GC2-sheet", "-k", args[0], "-s", args[1], "-d", args[2]}); err != nil {
 		panic(err)
 	}
 }
